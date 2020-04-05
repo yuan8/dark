@@ -3,7 +3,7 @@
 @section('title', 'AdminLTE')
 
 @section('content_header')
-    <h1 class="text-center">REALISASI NASIOANL</h1>
+    <h1 class="text-center">REALISASI NASIOANAL</h1>
 @stop
 
 @section('content')
@@ -12,6 +12,15 @@
   <div class="col-md-12">
     <div class="box box-primary">
       <div class="box-body" id="pelaporan_chart">
+
+      </div>
+
+    </div>
+
+  </div>
+    <div class="col-md-12">
+    <div class="box box-primary">
+      <div class="box-body" id="pelaporan_chart_kat">
 
       </div>
 
@@ -36,7 +45,6 @@
             <th>DOWNLOAD FILE LAPORAN</th>
             <th>DATA REKAP APLIKASI</th>
 
-
           </tr>
         </thead>
         <tbody>
@@ -59,17 +67,17 @@
 <script type="text/javascript">
 Highcharts.chart('pelaporan_chart', {
     chart: {
-        type: 'area'
+        type: 'line'
     },
     title: {
-        text: 'REALISASI DAK TAHUN {{HP::front_tahun()}}'
+        text: 'REALISASI TOTAL DAK TAHUN {{HP::front_tahun()}}'
     },
     subtitle: {
         // text: 'Source: Wikipedia.org'
     },
     xAxis: {
         categories: ['TW I','TW II','TW III','TW IV'],
-        tickmarkPlacement: 'on',
+        // tickmarkPlacement: 'on',
         title: {
             enabled: false
         }
@@ -89,9 +97,9 @@ Highcharts.chart('pelaporan_chart', {
         valueSuffix: ' DAERAH'
     },
     plotOptions: {
-        area: {
+        line: {
             cursor: 'pointer',
-            stacking: 'normal',
+            // stacking: 'normal',
             lineColor: '#666666',
             lineWidth: 1,
             marker: {
@@ -120,9 +128,113 @@ Highcharts.chart('pelaporan_chart', {
         {
         name: 'VOLUM FISIK ',
         data: [{{$data['reakap_realisasi']['1']['volume_fisik']}},{{$data['reakap_realisasi']['2']['volume_fisik']}},{{$data['reakap_realisasi']['3']['volume_fisik']}},{{$data['reakap_realisasi']['4']['volume_fisik']}}]
-        }
+        },
+
+
       ]
 });
+
+Highcharts.chart('pelaporan_chart_kat', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'REALISASI PERKATEGORI DAK TAHUN {{HP::front_tahun()}}'
+    },
+    subtitle: {
+        // text: 'Source: Wikipedia.org'
+    },
+    xAxis: {
+        categories: ['TW I','TW II','TW III','TW IV'],
+        // tickmarkPlacement: 'on',
+        title: {
+            enabled: false
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'DAERAH'
+        },
+        labels: {
+            formatter: function () {
+                return this.value;
+            }
+        }
+    },
+    tooltip: {
+        split: true,
+        valueSuffix: ' DAERAH'
+    },
+    plotOptions: {
+        column: {
+            cursor: 'pointer',
+            // stacking: 'normal',
+            lineColor: '#666666',
+            lineWidth: 1,
+            marker: {
+                lineWidth: 1,
+                lineColor: '#666666'
+            },
+            point: {
+                  events: {
+                      click: function () {
+                        dropDaetail((this.index)+1);
+                      }
+                  }
+            }
+        },
+
+    },
+    series: [
+      {
+        name: 'PAGU REGULER',
+        data: [{{$data['reakap_realisasi']['1']['pagu_reguler']}},{{$data['reakap_realisasi']['2']['pagu_reguler']}},{{$data['reakap_realisasi']['3']['pagu_reguler']}},{{$data['reakap_realisasi']['4']['pagu_reguler']}}]
+        },
+        {
+        name: 'KEUANGAN REGULER',
+        data: [{{$data['reakap_realisasi']['1']['keuangan_reguler']}},{{$data['reakap_realisasi']['2']['keuangan_reguler']}},{{$data['reakap_realisasi']['3']['keuangan_reguler']}},{{$data['reakap_realisasi']['4']['keuangan_reguler']}}]
+        },
+        {
+        name: 'VOLUM FISIK REGULER ',
+        data: [{{$data['reakap_realisasi']['1']['volume_fisik_reguler']}},{{$data['reakap_realisasi']['2']['volume_fisik_reguler']}},{{$data['reakap_realisasi']['3']['volume_fisik_reguler']}},{{$data['reakap_realisasi']['4']['volume_fisik_reguler']}}]
+        },
+        {
+        name: 'PAGU PENUGASAN',
+        data: [{{$data['reakap_realisasi']['1']['pagu_penugasan']}},{{$data['reakap_realisasi']['2']['pagu_penugasan']}},{{$data['reakap_realisasi']['3']['pagu_penugasan']}},{{$data['reakap_realisasi']['4']['pagu_penugasan']}}]
+        },
+        {
+        name: 'KEUANGAN PENUGASAN',
+        data: [{{$data['reakap_realisasi']['1']['keuangan_penugasan']}},{{$data['reakap_realisasi']['2']['keuangan_penugasan']}},{{$data['reakap_realisasi']['3']['keuangan_penugasan']}},{{$data['reakap_realisasi']['4']['keuangan_penugasan']}}]
+        },
+        {
+        name: 'VOLUM FISIK PENUGASAN ',
+        data: [{{$data['reakap_realisasi']['1']['volume_fisik_penugasan']}},{{$data['reakap_realisasi']['2']['volume_fisik_penugasan']}},{{$data['reakap_realisasi']['3']['volume_fisik_penugasan']}},{{$data['reakap_realisasi']['4']['volume_fisik_penugasan']}}]
+        },
+          {
+        name: 'PAGU AFFIRMASI',
+        data: [{{$data['reakap_realisasi']['1']['pagu_affirmasi']}},{{$data['reakap_realisasi']['2']['pagu_affirmasi']}},{{$data['reakap_realisasi']['3']['pagu_affirmasi']}},{{$data['reakap_realisasi']['4']['pagu_affirmasi']}}]
+        },
+        {
+        name: 'KEUANGAN AFFIRMASI',
+        data: [{{$data['reakap_realisasi']['1']['keuangan_affirmasi']}},{{$data['reakap_realisasi']['2']['keuangan_affirmasi']}},{{$data['reakap_realisasi']['3']['keuangan_affirmasi']}},{{$data['reakap_realisasi']['4']['keuangan_affirmasi']}}]
+        },
+        {
+        name: 'VOLUM FISIK AFFIRMASI ',
+        data: [{{$data['reakap_realisasi']['1']['volume_fisik_affirmasi']}},{{$data['reakap_realisasi']['2']['volume_fisik_affirmasi']}},{{$data['reakap_realisasi']['3']['volume_fisik_affirmasi']}},{{$data['reakap_realisasi']['4']['volume_fisik_affirmasi']}}]
+        },
+        {
+        name: 'PAGU NON FISIK',
+        data: [{{$data['reakap_realisasi']['1']['pagu_non_fisik']}},{{$data['reakap_realisasi']['2']['pagu_non_fisik']}},{{$data['reakap_realisasi']['3']['pagu_non_fisik']}},{{$data['reakap_realisasi']['4']['pagu_non_fisik']}}]
+        },
+        {
+        name: 'KEUANGAN NON FISIK',
+        data: [{{$data['reakap_realisasi']['1']['keuangan_non_fisik']}},{{$data['reakap_realisasi']['2']['keuangan_non_fisik']}},{{$data['reakap_realisasi']['3']['keuangan_non_fisik']}},{{$data['reakap_realisasi']['4']['keuangan_non_fisik']}}]
+        },
+       
+
+      ]
+});
+
 
 var data_page=<?php echo json_encode($data,true); ?>;
 var data_table='';
@@ -145,7 +257,7 @@ function dropDaetail(index){
 
         },
         {
-          data:'perencanaan_kegiatan_pagu_dak_fisik',
+          data:'perencanaan_kegiatan_pagu_dak_reguler',
           type:'string',
           render:function(data){
             data=data!=null?(data+''):'';
@@ -163,7 +275,7 @@ function dropDaetail(index){
           }
         },
         {
-          data:'realisasi_fisik_volume',
+          data:'realisasi_reguler_volume',
           type:'string',
           render:function(data){
             data=data!=null?(data+''):'';
@@ -174,7 +286,7 @@ function dropDaetail(index){
           data:'file_path',
           type:'html',
           render:function(data){
-            return '<a download href="{{url('')}}'+'/'+data+'" class="btn btn-primary btn-xs">Download</a>';
+            return '<a download href="{{url('storage/files/'.HP::front_tahun())}}'+'/'+data+'" class="btn btn-primary btn-xs">Download</a>';
           }
 
         },

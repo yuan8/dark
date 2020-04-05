@@ -9,6 +9,7 @@ use DB;
 class RelNasional extends Controller
 {
     public function index(){
+      $in="'KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)'";
     	   $tahun=HP::front_tahun();
       $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table')->get();
       $data_daerah=[];
@@ -20,9 +21,21 @@ class RelNasional extends Controller
           DB::raw("(select id from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as kode_daerah"),
           'dd.tw',
           DB::raw("max(dd.url) as file_path") ,
-          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
-          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
-          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume")
+          DB::raw("sum(case when kolom in (".$in.") then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =1) then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik_reguler"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =2) then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik_penugasan"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =3) then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik_affirmasi"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =4) then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik_non_fisik"),
+          DB::raw("sum(case when kolom in (".$in.") then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =1) then realisasi_keuangan else 0 end ) as realisasi_keuangan_reguler"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =2) then realisasi_keuangan else 0 end ) as realisasi_keuangan_penugasan"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =3) then realisasi_keuangan else 0 end ) as realisasi_keuangan_affirmasi"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =4) then realisasi_keuangan else 0 end ) as realisasi_keuangan_non_fisik"),
+          DB::raw("sum(case when kolom in (".$in.") then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =1) then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume_reguler"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =2) then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume_penugasan"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =3) then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume_affirmasi"),
+           DB::raw("sum(case when (kolom in (".$in.") and kategori_dak =4) then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume_non_fisik")
         )
         ->orderBy('dd.tw','asc')
         ->orderBy('kode_daerah','asc')
@@ -36,20 +49,78 @@ class RelNasional extends Controller
       $TW2=[];
       $TW3=[];
       $TW4=[];
+
       $perencanaan_kegiatan_pagu_dak_fisik_1=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_1_reguler=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik=0;
+
       $perencanaan_kegiatan_pagu_dak_fisik_2=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_2_reguler=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_2_penugasan=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_2_affirmasi=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_2_non_fisik=0;
+
       $perencanaan_kegiatan_pagu_dak_fisik_3=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_3_reguler=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_3_penugasan=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_3_affirmasi=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_3_non_fisik=0;
+
       $perencanaan_kegiatan_pagu_dak_fisik_4=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_4_reguler=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_4_penugasan=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_4_affirmasi=0;
+      $perencanaan_kegiatan_pagu_dak_fisik_4_non_fisik=0;
 
       $realisasi_keuangan_1=0;
+      $realisasi_keuangan_1_reguler=0;
+      $realisasi_keuangan_1_penugasan=0;
+      $realisasi_keuangan_1_affirmasi=0;
+      $realisasi_keuangan_1_non_fisik=0;
+
       $realisasi_keuangan_2=0;
+      $realisasi_keuangan_2_reguler=0;
+      $realisasi_keuangan_2_penugasan=0;
+      $realisasi_keuangan_2_affirmasi=0;
+      $realisasi_keuangan_2_non_fisik=0;
+
       $realisasi_keuangan_3=0;
+      $realisasi_keuangan_3_reguler=0;
+      $realisasi_keuangan_3_penugasan=0;
+      $realisasi_keuangan_3_affirmasi=0;
+      $realisasi_keuangan_3_non_fisik=0;
+
       $realisasi_keuangan_4=0;
+      $realisasi_keuangan_4_reguler=0;
+      $realisasi_keuangan_4_penugasan=0;
+      $realisasi_keuangan_4_affirmasi=0;
+      $realisasi_keuangan_4_non_fisik=0;
 
       $realisasi_fisik_volume_1=0;
+      $realisasi_fisik_volume_1_reguler=0;
+      $realisasi_fisik_volume_1_penugasan=0;
+      $realisasi_fisik_volume_1_affirmasi=0;
+      $realisasi_fisik_volume_1_non_fisik=0;
+
       $realisasi_fisik_volume_2=0;
+      $realisasi_fisik_volume_2_reguler=0;
+      $realisasi_fisik_volume_2_penugasan=0;
+      $realisasi_fisik_volume_2_affirmasi=0;
+      $realisasi_fisik_volume_2_non_fisik=0;
+
       $realisasi_fisik_volume_3=0;
+      $realisasi_fisik_volume_3_reguler=0;
+      $realisasi_fisik_volume_3_penugasan=0;
+      $realisasi_fisik_volume_3_affirmasi=0;
+      $realisasi_fisik_volume_3_non_fisik=0;
+
       $realisasi_fisik_volume_4=0;
+      $realisasi_fisik_volume_4_reguler=0;
+      $realisasi_fisik_volume_4_penugasan=0;
+      $realisasi_fisik_volume_4_affirmasi=0;
+      $realisasi_fisik_volume_4_non_fisik=0;
 
       foreach($data_daerah as $d){
         switch ($d->tw) {
@@ -57,30 +128,87 @@ class RelNasional extends Controller
             // code...
             $TW1[]=(array)$d;
             $perencanaan_kegiatan_pagu_dak_fisik_1+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+
             $realisasi_keuangan_1+=$d->realisasi_keuangan;
+            $realisasi_keuangan_1_reguler+=$d->realisasi_keuangan_reguler;
+            $realisasi_keuangan_1_penugasan+=$d->realisasi_keuangan_penugasan;
+            $realisasi_keuangan_1_affirmasi+=$d->realisasi_keuangan_affirmasi;
+            $realisasi_keuangan_1_non_fisik+=$d->realisasi_keuangan_non_fisik;
+
             $realisasi_fisik_volume_1=$d->realisasi_fisik_volume;
+            $realisasi_fisik_volume_1_reguler=$d->realisasi_fisik_volume_reguler;
+            $realisasi_fisik_volume_1_penugasan=$d->realisasi_fisik_volume_penugasan;
+            $realisasi_fisik_volume_1_affirmasi=$d->realisasi_fisik_volume_affirmasi;
+            $realisasi_fisik_volume_1_non_fisik=$d->realisasi_fisik_volume_non_fisik;
 
             break;
             case 2:
             // code...
             $TW2[]=(array)$d;
             $perencanaan_kegiatan_pagu_dak_fisik_2+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+
             $realisasi_keuangan_2+=$d->realisasi_keuangan;
+            $realisasi_keuangan_2_reguler+=$d->realisasi_keuangan_reguler;
+            $realisasi_keuangan_2_penugasan+=$d->realisasi_keuangan_penugasan;
+            $realisasi_keuangan_2_affirmasi+=$d->realisasi_keuangan_affirmasi;
+            $realisasi_keuangan_2_non_fisik+=$d->realisasi_keuangan_non_fisik;
+
             $realisasi_fisik_volume_2=$d->realisasi_fisik_volume;
+            $realisasi_fisik_volume_2_reguler=$d->realisasi_fisik_volume_reguler;
+            $realisasi_fisik_volume_2_penugasan=$d->realisasi_fisik_volume_penugasan;
+            $realisasi_fisik_volume_2_affirmasi=$d->realisasi_fisik_volume_affirmasi;
+            $realisasi_fisik_volume_2_non_fisik=$d->realisasi_fisik_volume_non_fisik;
+
 
             break;
             case 3:
             // code...
             $TW3[]=(array)$d;
             $perencanaan_kegiatan_pagu_dak_fisik_3+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+
             $realisasi_keuangan_3+=$d->realisasi_keuangan;
+            $realisasi_keuangan_3_reguler+=$d->realisasi_keuangan_reguler;
+            $realisasi_keuangan_3_penugasan+=$d->realisasi_keuangan_penugasan;
+            $realisasi_keuangan_3_affirmasi+=$d->realisasi_keuangan_affirmasi;
+            $realisasi_keuangan_3_non_fisik+=$d->realisasi_keuangan_non_fisik;
+
             $realisasi_fisik_volume_3=$d->realisasi_fisik_volume;
+            $realisasi_fisik_volume_3_reguler=$d->realisasi_fisik_volume_reguler;
+            $realisasi_fisik_volume_3_penugasan=$d->realisasi_fisik_volume_penugasan;
+            $realisasi_fisik_volume_3_affirmasi=$d->realisasi_fisik_volume_affirmasi;
+            $realisasi_fisik_volume_3_non_fisik=$d->realisasi_fisik_volume_non_fisik;
 
             break;
             case 4:
             $perencanaan_kegiatan_pagu_dak_fisik_4+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_4_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_4_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_4_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_4_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+
             $realisasi_keuangan_4+=$d->realisasi_keuangan;
+            $realisasi_keuangan_4_reguler+=$d->realisasi_keuangan_reguler;
+            $realisasi_keuangan_4_penugasan+=$d->realisasi_keuangan_penugasan;
+            $realisasi_keuangan_4_affirmasi+=$d->realisasi_keuangan_affirmasi;
+            $realisasi_keuangan_4_non_fisik+=$d->realisasi_keuangan_non_fisik;
+
             $realisasi_fisik_volume_4=$d->realisasi_fisik_volume;
+            $realisasi_fisik_volume_4_reguler=$d->realisasi_fisik_volume_reguler;
+            $realisasi_fisik_volume_4_penugasan=$d->realisasi_fisik_volume_penugasan;
+            $realisasi_fisik_volume_4_affirmasi=$d->realisasi_fisik_volume_affirmasi;
+            $realisasi_fisik_volume_4_non_fisik=$d->realisasi_fisik_volume_non_fisik;
 
             // code...
             $TW4[]=(array)$d;
@@ -91,27 +219,77 @@ class RelNasional extends Controller
         }
       }
 
+
       $return=array(
         'reakap_realisasi'=>array(
           '1'=>[
               'keuangan'=>$realisasi_keuangan_1,
               'volume_fisik'=>$realisasi_fisik_volume_1,
-              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_1
+              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_1,
+              'keuangan_reguler'=>$realisasi_keuangan_1_reguler,
+              'volume_fisik_reguler'=>$realisasi_fisik_volume_1_reguler,
+              'pagu_reguler'=>$perencanaan_kegiatan_pagu_dak_fisik_1_reguler,
+              'keuangan_penugasan'=>$realisasi_keuangan_1_penugasan,
+              'volume_fisik_penugasan'=>$realisasi_fisik_volume_1_penugasan,
+              'pagu_penugasan'=>$perencanaan_kegiatan_pagu_dak_fisik_1_penugasan,
+              'keuangan_affirmasi'=>$realisasi_keuangan_1_affirmasi,
+              'volume_fisik_affirmasi'=>$realisasi_fisik_volume_1_affirmasi,
+              'pagu_affirmasi'=>$perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi,
+              'keuangan_non_fisik'=>$realisasi_keuangan_1_non_fisik,
+              'volume_fisik_non_fisik'=>$realisasi_fisik_volume_1_non_fisik,
+              'pagu_non_fisik'=>$perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik,
+
             ],
           '2'=>[
               'keuangan'=>$realisasi_keuangan_2,
               'volume_fisik'=>$realisasi_fisik_volume_2,
-              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_2
+              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_2,
+              'keuangan_reguler'=>$realisasi_keuangan_2_reguler,
+              'volume_fisik_reguler'=>$realisasi_fisik_volume_2_reguler,
+              'pagu_reguler'=>$perencanaan_kegiatan_pagu_dak_fisik_2_reguler,
+              'keuangan_penugasan'=>$realisasi_keuangan_2_penugasan,
+              'volume_fisik_penugasan'=>$realisasi_fisik_volume_2_penugasan,
+              'pagu_penugasan'=>$perencanaan_kegiatan_pagu_dak_fisik_2_penugasan,
+              'keuangan_affirmasi'=>$realisasi_keuangan_2_affirmasi,
+              'volume_fisik_affirmasi'=>$realisasi_fisik_volume_2_affirmasi,
+              'pagu_affirmasi'=>$perencanaan_kegiatan_pagu_dak_fisik_2_affirmasi,
+              'keuangan_non_fisik'=>$realisasi_keuangan_2_non_fisik,
+              'volume_fisik_non_fisik'=>$realisasi_fisik_volume_2_non_fisik,
+              'pagu_non_fisik'=>$perencanaan_kegiatan_pagu_dak_fisik_2_non_fisik,
             ],
           '3'=>[
               'keuangan'=>$realisasi_keuangan_3,
               'volume_fisik'=>$realisasi_fisik_volume_3,
-              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_3
+              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_3,
+              'keuangan_reguler'=>$realisasi_keuangan_3_reguler,
+              'volume_fisik_reguler'=>$realisasi_fisik_volume_3_reguler,
+              'pagu_reguler'=>$perencanaan_kegiatan_pagu_dak_fisik_3_reguler,
+              'keuangan_penugasan'=>$realisasi_keuangan_3_penugasan,
+              'volume_fisik_penugasan'=>$realisasi_fisik_volume_3_penugasan,
+              'pagu_penugasan'=>$perencanaan_kegiatan_pagu_dak_fisik_3_penugasan,
+              'keuangan_affirmasi'=>$realisasi_keuangan_3_affirmasi,
+              'volume_fisik_affirmasi'=>$realisasi_fisik_volume_3_affirmasi,
+              'pagu_affirmasi'=>$perencanaan_kegiatan_pagu_dak_fisik_3_affirmasi,
+              'keuangan_non_fisik'=>$realisasi_keuangan_3_non_fisik,
+              'volume_fisik_non_fisik'=>$realisasi_fisik_volume_3_non_fisik,
+              'pagu_non_fisik'=>$perencanaan_kegiatan_pagu_dak_fisik_3_non_fisik,
             ],
           '4'=>[
               'keuangan'=>$realisasi_keuangan_4,
               'volume_fisik'=>$realisasi_fisik_volume_4,
-              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_4
+              'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_4,
+              'keuangan_reguler'=>$realisasi_keuangan_4_reguler,
+              'volume_fisik_reguler'=>$realisasi_fisik_volume_4_reguler,
+              'pagu_reguler'=>$perencanaan_kegiatan_pagu_dak_fisik_4_reguler,
+              'keuangan_penugasan'=>$realisasi_keuangan_4_penugasan,
+              'volume_fisik_penugasan'=>$realisasi_fisik_volume_4_penugasan,
+              'pagu_penugasan'=>$perencanaan_kegiatan_pagu_dak_fisik_4_penugasan,
+              'keuangan_affirmasi'=>$realisasi_keuangan_4_affirmasi,
+              'volume_fisik_affirmasi'=>$realisasi_fisik_volume_4_affirmasi,
+              'pagu_affirmasi'=>$perencanaan_kegiatan_pagu_dak_fisik_4_affirmasi,
+              'keuangan_non_fisik'=>$realisasi_keuangan_4_non_fisik,
+              'volume_fisik_non_fisik'=>$realisasi_fisik_volume_4_non_fisik,
+              'pagu_non_fisik'=>$perencanaan_kegiatan_pagu_dak_fisik_4_non_fisik,
             ]
         ),
         'data_daerah'=>[
@@ -121,6 +299,8 @@ class RelNasional extends Controller
             '4'=>$TW4,
           ]
       );
+
+// dd($return);
 
       return view('front.realisasi.nas.index')->with('data',$return);
     }
