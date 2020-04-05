@@ -17,6 +17,9 @@
 
 Route::get('/init/{tahun}','INIT\InitialTahunCtrl@careteDb' );
 
+Route::get('/db','INIT\InitialTahunCtrl@back');
+
+
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');

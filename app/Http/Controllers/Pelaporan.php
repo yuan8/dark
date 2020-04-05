@@ -16,13 +16,14 @@ class Pelaporan extends Controller
       foreach ($tables as $key => $table) {
         $data=DB::table($tahun.$table->table.' as dd')
         ->select(
-          DB::raw("(case when dd.kota_kab is null then dd.provinsi else dd.kota_kab end) as kode_daerah"),
-          DB::raw("(select nama from master_daerah as d where id=(case when dd.kota_kab is null then dd.provinsi else dd.kota_kab end) limit 1) as nama_daerah"),
+          // DB::raw("(case when dd.kota_kab is null then dd.provinsi else dd.kota_kab end) as kode_daerah"),
+          DB::raw("(select nama from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as nama_daerah"),
+          DB::raw("(select id from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as kode_daerah"),
           'dd.tw',
           DB::raw("max(dd.url) as file_path") ,
-          DB::raw("sum(perencanaan_kegiatan_pagu_dak_fisik) as perencanaan_kegiatan_pagu_dak_fisik"),
-          DB::raw("sum(realisasi_keuangan) as realisasi_keuangan"),
-          DB::raw("sum(realisasi_fisik_volume) as realisasi_fisik_volume")
+          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
+          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
+          DB::raw("sum(case when kolom in ('KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)') then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume")
         )
         ->orderBy('dd.tw','asc')
         ->orderBy('kode_daerah','asc')

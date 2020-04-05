@@ -14,6 +14,35 @@ class InitialTahunCtrl extends Controller
     //
 
 
+  public function back(){
+  //   $daerh=DB::table('master_daerah')->get();
+  // foreach ($daerh as $key => $d) {
+  //   $dr=DB::connection('back')->table('data')
+  //   ->where(DB::raw("replace(nama,' ','')"),'ilike',('%'.str_replace(' ', '', $d->nama).'%'))->first();
+  //   if($dr){
+  //     DB::connection('back')->table('data')
+  //     // where('id','!=',null)
+  //     ->where('id_pro',$dr->id_pro)
+  //     ->where('id_kota',$dr->id_kota)->update(['id'=>$d->id]);
+  //   }
+  // }
+
+    $daerh=DB::table('master_daerah')->get();
+  foreach ($daerh as $key => $d) {
+    $dr=DB::connection('back')->table('data')
+    ->where('id',$d->id)->first();
+    if($dr){
+     DB::table('master_daerah')
+     ->where('id',$d->id)
+      ->update([
+        'id_pro'=>$dr->id_pro,
+        'id_kota'=>$dr->id_kota,
+        'geojsonfile'=>$dr->geojsonfile,
+      ]);
+    }
+  }
+  }
+
     public function careteDb($tahun){
     $daerah=  DB::table('master_daerah')->where('kode_daerah_parent',null)->get();
       foreach ($daerah as $key => $d) {
@@ -61,6 +90,8 @@ class InitialTahunCtrl extends Controller
                $table->text('komentar_verifikasi')->nullable();
 
           });
+        }else{
+          DB::table($tahun.'_'.$name)->truncate();
         }
       }
 
