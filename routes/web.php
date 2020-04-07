@@ -18,6 +18,10 @@
 Route::get('/init/{tahun}','INIT\InitialTahunCtrl@careteDb' );
 
 Route::get('/db','INIT\InitialTahunCtrl@back');
+Route::get('/home',function(){
+	return redirect('/');
+});
+
 
 
 Auth::routes();
