@@ -16,6 +16,8 @@
 // });
 
 Route::get('/init/{tahun}','INIT\InitialTahunCtrl@careteDb' );
+Route::get('/init-drop/{tahun}','INIT\InitialTahunCtrl@dropTable' );
+
 
 Route::get('/db','INIT\InitialTahunCtrl@back');
 Route::get('/home',function(){
