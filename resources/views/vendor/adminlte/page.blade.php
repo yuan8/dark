@@ -117,7 +117,7 @@
 
           </div>
             @if(config('adminlte.layout') == 'top-nav')
-            <div class="container">
+            <div class="container-fluid">
             @endif
 
             <!-- Content Header (Page header) -->

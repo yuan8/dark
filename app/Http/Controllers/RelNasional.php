@@ -9,7 +9,7 @@ use DB;
 class RelNasional extends Controller
 {
     public function index(){
-      $in="'KEGIATAN','SUB KEGIATAN','KEGIATAN (SILPA)'";
+      $in="'KEGIATAN','SUB KEGIATAN','DETAIL SUB KEGIATAN','KEGIATAN (SILPA)'";
     	   $tahun=HP::front_tahun();
       $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table')->get();
       $data_daerah=[];
@@ -123,7 +123,7 @@ class RelNasional extends Controller
       $realisasi_fisik_volume_4_non_fisik=0;
 
       foreach($data_daerah as $d){
-        switch ($d->tw) {
+        switch ((int)$d->tw) {
             case 1:
             // code...
             $TW1[]=(array)$d;
@@ -150,10 +150,10 @@ class RelNasional extends Controller
             // code...
             $TW2[]=(array)$d;
             $perencanaan_kegiatan_pagu_dak_fisik_2+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_2_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_2_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_2_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_2_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
 
             $realisasi_keuangan_2+=$d->realisasi_keuangan;
             $realisasi_keuangan_2_reguler+=$d->realisasi_keuangan_reguler;
@@ -173,10 +173,10 @@ class RelNasional extends Controller
             // code...
             $TW3[]=(array)$d;
             $perencanaan_kegiatan_pagu_dak_fisik_3+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
-            $perencanaan_kegiatan_pagu_dak_fisik_1_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
+            $perencanaan_kegiatan_pagu_dak_fisik_3_reguler+=$d->perencanaan_kegiatan_pagu_dak_fisik_reguler;
+            $perencanaan_kegiatan_pagu_dak_fisik_3_penugasan+=$d->perencanaan_kegiatan_pagu_dak_fisik_penugasan;
+            $perencanaan_kegiatan_pagu_dak_fisik_3_affirmasi+=$d->perencanaan_kegiatan_pagu_dak_fisik_affirmasi;
+            $perencanaan_kegiatan_pagu_dak_fisik_3_non_fisik+=$d->perencanaan_kegiatan_pagu_dak_fisik_non_fisik;
 
             $realisasi_keuangan_3+=$d->realisasi_keuangan;
             $realisasi_keuangan_3_reguler+=$d->realisasi_keuangan_reguler;
@@ -300,9 +300,14 @@ class RelNasional extends Controller
           ]
       );
 
-// dd($return);
+// dd($return['data_daerah']['2']);
 
       return view('front.realisasi.nas.index')->with('data',$return);
     }
 
+
+
+    public function realisasi_perbidang(){
+      
+    }
 }

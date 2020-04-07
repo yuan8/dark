@@ -19,6 +19,8 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/AdminLTE.min.css') }}">
+<script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}"></script>
+    
 
     @yield('adminlte_css')
 
@@ -35,11 +37,16 @@
 @yield('body')
 <script type="text/javascript">
 function formatNumber(num) {
-return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+if((num!='')&&(num!=null)){
+    num=parseFloat(num).toFixed(3);
+}else{
+    num=0;
+}
+
+return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 }
 </script>
 
-<script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}"></script>
 <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.slimscroll.min.js') }}"></script>
 <script src="{{ asset('vendor/adminlte/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
@@ -47,7 +54,22 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 
 <script src="{{url('vendor/highchart/highcharts.js')}}" charset="utf-8"></script>
 <script src="{{url('vendor/Datatable/datatables.js')}}" charset="utf-8"></script>
+<script type="text/javascript">
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "currency-pre": function ( a ) {
+        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+        return parseFloat( a );
+    },
 
+    "currency-asc": function ( a, b ) {
+        return a - b;
+    },
+
+    "currency-desc": function ( a, b ) {
+        return b - a;
+    }
+} );
+</script>
 
 
 @yield('adminlte_js')

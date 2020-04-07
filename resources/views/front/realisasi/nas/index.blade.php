@@ -39,11 +39,11 @@
           <tr>
             <th>KODE DAERAH</th>
             <th>NAMA DAERAH</th>
-            <th>PAGU</th>
-            <th>REALISASI KEUNAGAN</th>
-            <th>REALISASI FISIK</th>
-            <th>DOWNLOAD FILE LAPORAN</th>
-            <th>DATA REKAP APLIKASI</th>
+            <th>REL PERKATEGORY</th>
+            <th>PAGU <small>(RP.(RIBUAN))</small></th>
+            <th>KEUANGAN <small>(RP.(RIBUAN))</small></th>
+            <th>FISIK <small>(Unit)</small></th>
+            <th>FILE LAPORAN</th>
 
           </tr>
         </thead>
@@ -239,7 +239,7 @@ Highcharts.chart('pelaporan_chart_kat', {
 var data_page=<?php echo json_encode($data,true); ?>;
 var data_table='';
 function dropDaetail(index){
-  $('#table-view .box-header .title').html('PELAPORAN DAK TW '+index);
+  $('#table-view .box-header .title').html('REALISASI DAK TW '+index);
   var dom=$('#table-view').css('display');
   if(dom=='none'){
     $('#table-view').css('display','block');
@@ -257,45 +257,47 @@ function dropDaetail(index){
 
         },
         {
-          data:'perencanaan_kegiatan_pagu_dak_reguler',
-          type:'string',
+          type:'html',
+          render:function(data,type,data_row,meta){
+            return '<a download href="{{url('storage/files/'.HP::front_tahun())}}'+'" class="btn btn-info btn-xs">Detail</a>';
+          }
+        },
+        {
+          data:'perencanaan_kegiatan_pagu_dak_fisik',
+          type:'currency',
           render:function(data){
-            data=data!=null?(data+''):'';
+            data=data!=null?(data):'';
 
-            return 'Rp. '+formatNumber(data);
+            return ''+formatNumber(data);
           }
         },
         {
           data:'realisasi_keuangan',
-          type:'string',
+          type:'currency',
           render:function(data){
-            data=data!=null?(data+''):'';
+            data=data!=null?(data):'';
 
-            return 'Rp. '+formatNumber(data);
+            return ''+formatNumber(data);
           }
         },
         {
-          data:'realisasi_reguler_volume',
-          type:'string',
+          data:'realisasi_fisik_volume',
+          type:'currency',
           render:function(data){
-            data=data!=null?(data+''):'';
-            return 'Rp. '+formatNumber(data);
+            data=data!=null?(data):'';
+
+            return ''+formatNumber(data);
           }
         },
         {
           data:'file_path',
           type:'html',
-          render:function(data){
-            return '<a download href="{{url('storage/files/'.HP::front_tahun())}}'+'/'+data+'" class="btn btn-primary btn-xs">Download</a>';
+          render:function(data,type,data_row,meta){
+            return '<div class="btn-group"><a download href="{{url('storage/files/'.HP::front_tahun())}}'+'/'+data+'" class="btn btn-primary btn-xs">Download</a>'+'<a href="{{url('/pelaporan/detail-data/')}}/'+data_row.kode_daerah+'/'+data_row.tw+'" target="_blank" class="btn btn-success btn-xs">Detail</a></div>';
           }
 
         },
-        {
-          type:'html',
-          render:function(data,type,data_row,meta){
-            return '<a href="{{url('/pelaporan/detail-data/')}}/'+data_row.kode_daerah+'" target="_blank" class="btn btn-success btn-xs">Detail</a>';
-          }
-        }
+        
       ]
     });
   }else{

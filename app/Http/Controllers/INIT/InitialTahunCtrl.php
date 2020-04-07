@@ -44,6 +44,7 @@ class InitialTahunCtrl extends Controller
   }
 
     public function careteDb($tahun){
+      set_time_limit(-1);
     $daerah=  DB::table('master_daerah')->where('kode_daerah_parent',null)->get();
       foreach ($daerah as $key => $d) {
         $name=(str_replace(' ','_',$d->nama));
@@ -91,8 +92,54 @@ class InitialTahunCtrl extends Controller
 
           });
         }else{
-          DB::table($tahun.'_'.$name)->truncate();
-        }
+         $da=DB::table('master_daerah')->where('table','_'.$name)->get();
+         foreach ($da as $key => $d) {
+            for($i=1;$i<5;$i++){
+                
+                $data=DB::table($tahun.'_'.$name)->where('tw',$i)
+                ->where([
+                  ['provinsi','=',$d->id_pro],
+                  ['kota_kab','=',$d->id_kota],
+
+                ])->orderBy('kategori_dak','ASC')->orderBy('id','ASC')->get();
+                $kat=0;
+                $bid=0;
+                $sub_bid=0;
+                foreach ($data as $key => $dt) {
+                  if($dt->kategori_dak!=$kat){
+                    $bid=0;
+                    $sub_bid=0;
+                    $kat=$dt->kategori_dak;
+
+                  }
+                  if($dt->kolom=='BIDANG'){
+                    $bid+=1;
+                    $sub_bid=0;
+                  }
+                  if($dt->kolom=='SUB BIDANG'){
+                    $sub_bid+=1;
+                  }
+
+                  $dt->id_bidang=$bid;
+                  $dt->id_sub_bidang=$sub_bid;
+
+                DB::table($tahun.'_'.$name)->where('tw',$i)
+                  ->where([
+                    ['tw','=',$i],
+                    ['provinsi','=',$d->id_pro],
+                    ['kota_kab','=',$d->id_kota],
+                    ['id','=',$dt->id]
+                  ])->update((array)$dt);
+                }
+
+                  # code...
+             }
+             // tw
+              
+            }
+            // daerah
+          }
+          // end else
       }
 
 

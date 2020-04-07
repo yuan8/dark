@@ -35,8 +35,16 @@ class AppServiceProvider extends ServiceProvider
            $event->menu->add([
                  'text' => 'Pelaporan',
                  'icon'=>'fa fa-file',
-                 'url'=>route('pel')
-
+                 'submenu'=>[
+                  [
+                    'text'=>'Chart',
+                    'url'=>route('pel')
+                  ],
+                  [
+                    'text'=>'Map',
+                    'url'=>route('pel.map')
+                  ]
+                 ]
              ]);
              $event->menu->add([
                    'text' => 'Realisasi Tingkat Pusat',
@@ -50,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
                      ],
                      [
                         'text'=>'Rekap Perbidang',
-                        'url'=>''
+                        'url'=>route('rel.nas.bidang')
 
                      ]
 
@@ -63,13 +71,13 @@ class AppServiceProvider extends ServiceProvider
                  'submenu'=>[
                    [
                      'text'=>'Tingkat Provinsi',
-                     'url'=>''
+                     'url'=>route('rel.daerah.pro')
 
 
                    ],
                    [
                       'text'=>'Tingkat Daerah',
-                      'url'=>''
+                      'url'=>route('rel.daerah.kota')
 
                    ]
 
