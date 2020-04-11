@@ -17,27 +17,27 @@ class AppServiceProvider extends ServiceProvider
     {
        $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
 
-         // $event->menu->add([
-         //       'text' => 'Dashboard',
-         //       'icon'=>'fa fa-home',
-         //       'url'=>url('/')
+         $event->menu->add([
+               'text' => 'Dashboard',
+               'icon'=>'fa fa-home',
+               'url'=>url('/')
 
-         //   ]);
+           ]);
 
-         //   $event->menu->add([
-         //         'text' => 'Pelaporan',
-         //         'icon'=>'fa fa-file',
-         //         'submenu'=>[
-         //          [
-         //            'text'=>'Chart',
-         //            'url'=>route('pel')
-         //          ],
-         //          [
-         //            'text'=>'Map',
-         //            'url'=>route('pel.map')
-         //          ]
-         //         ]
-         //     ]);
+         $event->menu->add([
+               'text' => 'Pelaporan',
+               'icon'=>'fa fa-file',
+               'submenu'=>[
+                [
+                  'text'=>'Chart',
+                  'url'=>route('pel')
+                ],
+                [
+                  'text'=>'Map',
+                  'url'=>route('pel.map')
+                ]
+               ]
+           ]);
          //     $event->menu->add([
          //           'text' => 'Realisasi Tingkat Pusat',
          //           'icon'=>'fa fa-chart-bar',
