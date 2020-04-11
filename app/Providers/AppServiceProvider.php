@@ -17,12 +17,12 @@ class AppServiceProvider extends ServiceProvider
     {
        $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
 
-         $event->menu->add([
-               'text' => 'Dashboard',
-               'icon'=>'fa fa-home',
-               'url'=>url('/')
+         // $event->menu->add([
+         //       'text' => 'Dashboard',
+         //       'icon'=>'fa fa-home',
+         //       'url'=>url('/')
 
-           ]);
+         //   ]);
 
          // $event->menu->add([
          //       'text' => 'Pelaporan',
