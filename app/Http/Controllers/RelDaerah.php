@@ -14,7 +14,7 @@ class RelDaerah extends Controller
     	$tahun=HP::front_tahun();
     	$daerah=DB::table('master_daerah')
     	->where('kode_daerah_parent',null)
-    	->orderBy(DB::raw("id::numeric"),'ASC');
+    	->orderBy(DB::raw("id"),'ASC');
 
         $list_d=$daerah->get();
 
@@ -29,14 +29,14 @@ class RelDaerah extends Controller
 
     	foreach ($daerah as $key => $t) {
     		$data=DB::table('master_daerah as d')
-    			->leftJoin(($tahun.$t->table.' as dt'),function($q)use ($tw){
+    			->leftJoin(($t->table_name.'_'.$tahun.' as dt'),function($q)use ($tw){
     			 $q->on('dt.provinsi', '=', 'd.id_pro')->on('dt.kota_kab', '=', 'd.id_kota')
     			 ->where('dt.tw', '=',$tw );
     		})
     		->select(
     			"d.nama as nama_daerah",
                 "d.id as kode_daerah",
-    			DB::raw("count(dt.*) as count"),
+    			DB::raw("count(dt.id) as count"),
     			DB::raw("sum(case when dt.kolom in (".$in.") then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
 
     			DB::raw("sum(case when dt.kolom in (".$in.") then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
@@ -44,7 +44,7 @@ class RelDaerah extends Controller
     			DB::raw("max(url) as file")
 
     		)
-    		->where('d.id','ilike',$t->id.'%')
+    		->where('d.id','like',$t->id.'%')
     		->groupBy('d.id')
     		->orderBy('d.id','ASC')
 

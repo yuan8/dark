@@ -12,7 +12,7 @@ class RelProvinsi extends Controller
 
     	$in="'KEGIATAN','SUB KEGIATAN','DETAIL SUB KEGIATAN','KEGIATAN (SILPA)'";
     	   $tahun=HP::front_tahun();
-      $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table')->orderBy('nama','ASC');
+      $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table','table_name')->orderBy('nama','ASC');
       $list_d=$tables->get();
 
       if($request->p){
@@ -21,7 +21,7 @@ class RelProvinsi extends Controller
       $tables=$tables->paginate(1);
       $data_daerah=[];
       foreach ($tables as $key => $table) {
-        $data=DB::table($tahun.$table->table.' as dd')
+        $data=DB::table($table->table_name.'_'.$tahun.' as dd')
         ->select(
           // DB::raw("(case when dd.kota_kab is null then dd.provinsi else dd.kota_kab end) as kode_daerah"),
           DB::raw("(select nama from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as nama_daerah"),

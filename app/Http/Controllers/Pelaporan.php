@@ -13,16 +13,12 @@ class Pelaporan extends Controller
       $tahun=HP::front_tahun();
       $in="'KEGIATAN','SUB KEGIATAN','DETAIL SUB KEGIATAN','KEGIATAN (SILPA)'";
 
-
-
-
-      $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table')->get();
-
+      $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table','table_name')->get();
 
 
       $data_daerah=[];
       foreach ($tables as $key => $table) {
-        $data=DB::table($tahun.$table->table.' as dd')
+        $data=DB::table($table->table_name.'_'.$tahun.' as dd')
         ->select(
           // DB::raw("(case when dd.kota_kab is null then dd.provinsi else dd.kota_kab end) as kode_daerah"),
           DB::raw("(select nama from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as nama_daerah"),
@@ -151,7 +147,7 @@ class Pelaporan extends Controller
         $look=[];
 
         for($k=1;$k<5;$k++){
-            $look[$k]=DB::table($tahun.$daerah->table.' as td')
+            $look[$k]=DB::table($daerah->table_name.'_'.$tahun.' as td')
             ->select(
               DB::raw("(sum(case when kolom in (".$inq.") then perencanaan_kegiatan_pagu_dak_fisik else 0 end )) as pagu"),
               DB::raw("(sum(case when kolom in (".$inq.") then realisasi_keuangan else 0 end )) as realisasi_keuangan"),
@@ -165,7 +161,7 @@ class Pelaporan extends Controller
         }
       
 
-        $data=DB::table($tahun.$daerah->table)
+        $data=DB::table($daerah->table_name.'_'.$tahun)
         ->where('provinsi',$daerah->id_pro)
         ->where('kota_kab',$daerah->id_kota)
         ->where('tw',$tw)
@@ -412,6 +408,7 @@ class Pelaporan extends Controller
         }
 
         $detail=array(
+
           'REGULER'=>[
             'pagu'=>$pagu_reguler,
             'keuangan'=>$keuangan_reguler,
@@ -454,8 +451,8 @@ class Pelaporan extends Controller
       ->select(
         "d.id as kode_daerah",
         "d.nama",
-        "d.table",
-        DB::raw("(select count(*) from  master_daerah where id ilike d.id||'%') as jumlah_daerah"),
+        "d.table_name",
+        DB::raw("(select count(*) from  master_daerah where id_pro = d.id_pro) as jumlah_daerah"),
        DB::raw( "0 as jumlah_daerah_melapor"),
        DB::raw( "0 as persentase"),
        DB::raw( "'#222' as color")
@@ -468,7 +465,7 @@ class Pelaporan extends Controller
 
       $retrun=[];
       foreach ($daerah as $key => $value) {
-        $daerah[$key]->jumlah_daerah_melapor=count(DB::table($tahun.$value->table)
+        $daerah[$key]->jumlah_daerah_melapor=count(DB::table($value->table_name.'_'.$tahun)
         ->select(
           "provinsi",
           "kota_kab"
@@ -520,5 +517,105 @@ class Pelaporan extends Controller
         'data_pro'=>$return,
         'tw'=>$tw
       ]);
+    }
+
+
+    public function map_pro($kode_daerah,$tahun,$tw=1){
+        $daerah=DB::table('master_daerah')->where('id',$kode_daerah)->first();
+        if($daerah){
+          $list_daerah=DB::table('master_daerah')->where('id','like',($kode_daerah.'%'))->orderBy('id','ASC')->get();
+          $data_return=['lat'=>$daerah->lat,'lng'=>$daerah->lang,'geojsonlink'=>url('map/'.$daerah->geojsonfile),'nama'=>$daerah->nama,'tahun'=>$tahun,'tw'=>$tw,'data'=>[]];
+          foreach ($list_daerah as $key => $d) {
+              $data=DB::select("select * from (select kategori_dak,id_bidang_db,(case when kolom='BIDANG' then nama end) as nama ,sum(perencanaan_kegiatan_pagu_dak_fisik) as l
+                from ".$daerah->table_name.'_'.$tahun." where provinsi = ".$d->id_pro." and kota_kab = ".$d->id_kota." and tw = ".$tw."
+                group by id_bidang_db,kategori_dak ) as j
+                where l>0");
+
+               $dr_r=[
+                  'NAMA_DAERAH'=>$d->nama,
+                  'KODE_DAERAH'=>$d->id,
+                  'MELAPOR'=>0,
+                  'REGULER'=>['tersedia'=>0,'data'=>[]],
+                  'PENUGASAN'=>['tersedia'=>0,'data'=>[]],
+                  'AFFIRMASI'=>['tersedia'=>0,'data'=>[]],
+                  'NON_FISIK'=>['tersedia'=>0,'data'=>[]],
+                  'TOTAL_KAT'=>0,
+                  'TOTAL_KAT_TERSEDIA'=>11,
+                  'PERSENTASE'=>0,
+                  'COLOR'=>'#222'
+                ];
+
+              if($data){
+                $dr_r['MELAPOR']=1;
+                foreach ($data as $key => $v) {
+                  switch ($v->kategori_dak) {
+                    case 1:
+                    $dr_r['REGULER']['data'][]=$v;
+                    $dr_r['TOTAL_KAT']+=1;
+                    break;
+                    case 2:
+                    $dr_r['PENUGASAN']['data'][]=$v;
+                    $dr_r['TOTAL_KAT']+=1;
+                    case 3:
+                    $dr_r['AFFIRMASI']['data'][]=$v;
+                    $dr_r['TOTAL_KAT']+=1;
+                    case 4:
+                    $dr_r['AFFIRMASI']['data'][]=$v;
+                    $dr_r['TOTAL_KAT']+=1;
+                    break;
+                    
+                    default:
+                      # code...
+                      break;
+                  }
+                }
+
+              }else{
+
+              }
+
+              $color='#222';
+              if($dr_r['TOTAL_KAT']!=0){
+                $dr_r['PERSENTASE']=round($dr_r['TOTAL_KAT']*100/$dr_r['TOTAL_KAT_TERSEDIA'],3);
+              }
+              switch (true) {
+              case ($dr_r['PERSENTASE']>80):
+                # code...
+              $color="#00FF00";
+                break;
+              case ($dr_r['PERSENTASE']>60):
+                # code...
+              $color="#FFFF00";
+                break;
+              case ($dr_r['PERSENTASE']>40):
+                # code...
+              $color="#2C4F9B";
+                break;
+              case ($dr_r['PERSENTASE']>30):
+                # code...
+              $color="#cf6317";
+                break;
+              case ($dr_r['PERSENTASE']>1):
+                # code...
+              $color="#FF0000";
+                break;
+
+              default:
+                # code...
+              $color='#222';
+                break;
+            }
+
+            $dr_r['COLOR']=$color;
+            $data_return['data'][$d->id_kota]=$dr_r;
+
+          }
+
+         
+
+          return view('front.pelaporan.map.detail_pro')->with('data',$data_return);
+
+        }
+
     }
 }

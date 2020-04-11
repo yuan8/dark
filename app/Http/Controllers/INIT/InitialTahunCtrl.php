@@ -27,29 +27,22 @@ class InitialTahunCtrl extends Controller
   //   }
   // }
 
-    $daerh=DB::table('master_daerah')->get();
-  foreach ($daerh as $key => $d) {
-    $dr=DB::connection('back')->table('data')
-    ->where('id',$d->id)->first();
-    if($dr){
-     DB::table('master_daerah')
-     ->where('id',$d->id)
-      ->update([
-        'id_pro'=>$dr->id_pro,
-        'id_kota'=>$dr->id_kota,
-        'geojsonfile'=>$dr->geojsonfile,
-      ]);
+    $daerh=DB::table('master_daerah')->where('kode_daerah_parent',null)->get();
+    foreach ($daerh as $key => $d) {
+    $dr=DB::table('master_daerah')->where('id_pro',$d->id_pro)
+    ->update(['table_name'=>$d->table_name]);
+   
     }
-  }
   }
 
     public function careteDb($tahun){
       set_time_limit(-1);
     $daerah=  DB::table('master_daerah')->where('kode_daerah_parent',null)->get();
       foreach ($daerah as $key => $d) {
-        $name=(str_replace(' ','_',$d->nama));
-        if(!Schema::hasTable($tahun.'_'.$name)){
-          Schema::create($tahun.'_'.$name,function(Blueprint $table){
+        $t_name=$d->table_name.'_'.$tahun;
+
+        if(!Schema::hasTable($t_name)){
+          Schema::create($t_name,function(Blueprint $table){
                $table->bigIncrements('id');
                $table->bigInteger('id_bidang_db')->nullable();
                $table->bigInteger('id_sub_bidang_db')->nullable();
@@ -92,11 +85,12 @@ class InitialTahunCtrl extends Controller
 
           });
         }else{
-         $da=DB::table('master_daerah')->where('table','_'.$name)->get();
+          $name=$d->table;
+         $da=DB::table('master_daerah')->where('id_pro',$d->id_pro)->get();
          foreach ($da as $key => $d) {
             for($i=1;$i<5;$i++){
                 
-                $data=DB::table($tahun.'_'.$name)->where('tw',$i)
+                $data=DB::table($t_name)->where('tw',$i)
                 ->where([
                   ['provinsi','=',$d->id_pro],
                   ['kota_kab','=',$d->id_kota],
@@ -123,7 +117,7 @@ class InitialTahunCtrl extends Controller
                   $dt->id_bidang=$bid;
                   $dt->id_sub_bidang=$sub_bid;
 
-                DB::table($tahun.'_'.$name)->where('tw',$i)
+                DB::table($t_name)->where('tw',$i)
                   ->where([
                     ['tw','=',$i],
                     ['provinsi','=',$d->id_pro],
@@ -147,9 +141,10 @@ class InitialTahunCtrl extends Controller
 
     public function dropTable($tahun){
       $daerah=  DB::table('master_daerah')->where('kode_daerah_parent',null)->get();
+
       foreach ($daerah as $key => $d) {
-        $name=(str_replace(' ','_',$d->nama));
-          Schema::dropIfExists($tahun.'_'.$name);
+        $t_name=$d->table_name.'_'.$tahun;
+          Schema::dropIfExists($t_name);
       }
     }
 
