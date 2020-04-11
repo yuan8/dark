@@ -24,20 +24,20 @@ class AppServiceProvider extends ServiceProvider
 
            ]);
 
-         $event->menu->add([
-               'text' => 'Pelaporan',
-               'icon'=>'fa fa-file',
-               'submenu'=>[
-                [
-                  'text'=>'Chart',
-                  'url'=>route('pel')
-                ],
-                [
-                  'text'=>'Map',
-                  'url'=>route('pel.map')
-                ]
-               ]
-           ]);
+         // $event->menu->add([
+         //       'text' => 'Pelaporan',
+         //       'icon'=>'fa fa-file',
+         //       'submenu'=>[
+         //        [
+         //          'text'=>'Chart',
+         //          'url'=>route('pel')
+         //        ],
+         //        [
+         //          'text'=>'Map',
+         //          'url'=>route('pel.map')
+         //        ]
+         //       ]
+         //   ]);
          //     $event->menu->add([
          //           'text' => 'Realisasi Tingkat Pusat',
          //           'icon'=>'fa fa-chart-bar',
