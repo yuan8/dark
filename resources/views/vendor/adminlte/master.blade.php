@@ -53,8 +53,10 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 
 <script src="{{url('vendor/highchart/highcharts.js')}}" charset="utf-8"></script>
 <script src="{{url('vendor/Datatable/datatables.js')}}" charset="utf-8"></script>
+
+<script src="{{ asset('vendor/adminlte/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "currency-pre": function ( a ) {
         a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
         return parseFloat( a );
@@ -70,7 +72,6 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 } );
 </script>
 
-<script src="{{ asset('vendor/adminlte/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
 @yield('adminlte_js')
 

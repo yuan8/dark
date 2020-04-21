@@ -48,6 +48,7 @@ Route::middleware('auth:web')->group(function(){
 	Route::get('/realisasi/daerah/provinsi/{tw?}','RelProvinsi@index' )->name('rel.daerah.pro');
 	Route::get('/realisasi/daerah/provinsi-kota/{tw?}','RelDaerah@index' )->name('rel.daerah.kota');
 
+	Route::get('/realisasi/daerah/provinsi-sanitasi/','BIDANG\Sanitasi@index' )->name('f.sanitasi');
 
 
 });
