@@ -84,7 +84,7 @@ class AppServiceProvider extends ServiceProvider
                ]);
 
              $event->menu->add([
-                 'text' => 'sanitasi',
+                 'text' => 'Sanitasi',
                  'icon'=>'fa fa-calender',
                  'url'=>route('f.sanitasi',['kode_daerah'=>11,'tw'=>1])
 
