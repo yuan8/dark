@@ -9,8 +9,7 @@ class Pelaporan extends Controller
 {
     //
 
-    public function index(){
-      $tahun=HP::front_tahun();
+    static function pelaporan_nas($tahun,$kat='ALL'){
       $in="'KEGIATAN','SUB KEGIATAN','DETAIL SUB KEGIATAN','KEGIATAN (SILPA)'";
 
       $tables=DB::table('master_daerah')->where('kode_daerah_parent',null)->select('id','nama','table','table_name')->get();
@@ -25,9 +24,11 @@ class Pelaporan extends Controller
           DB::raw("(select id from master_daerah as d where id_pro=dd.provinsi and id_kota=dd.kota_kab limit 1) as kode_daerah"),
           'dd.tw',
           DB::raw("max(dd.url) as file_path") ,
-          DB::raw("sum(case when kolom in (".$in.") then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
-          DB::raw("sum(case when kolom in(".$in.") then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
-          DB::raw("sum(case when kolom in (".$in.") then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume")
+          DB::raw("sum(case when (kolom in (".$in.")  ".($kat=='FISIK'?" and kategori_dak in (1,2,3)":($kat=='NON'?"and kategori_dak=4":'')). ") then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as perencanaan_kegiatan_pagu_dak_fisik"),
+          DB::raw("sum(case when (kolom in (".$in.")  ".($kat=='FISIK'?" and kategori_dak in (1,2,3)":($kat=='NON'?"and kategori_dak=4":'')). ") then perencanaan_kegiatan_volume else 0 end ) as perencanaan_kegiatan_volume"),
+          DB::raw("sum(case when (kolom in (".$in.")  ".($kat=='FISIK'?" and kategori_dak in (1,2,3)":($kat=='NON'?"and kategori_dak=4":'')). ") then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
+          DB::raw("sum(case when (kolom in (".$in.")  ".($kat=='FISIK'?" and kategori_dak in (1,2,3)":($kat=='NON'?"and kategori_dak=4":'')). ") then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume")
+         
         )
         ->orderBy('dd.tw','asc')
         ->orderBy('kode_daerah','asc')
@@ -50,6 +51,12 @@ class Pelaporan extends Controller
       $realisasi_keuangan_2=0;
       $realisasi_keuangan_3=0;
       $realisasi_keuangan_4=0;
+      
+      $perencanaan_kegiatan_volume_1=0;
+      $perencanaan_kegiatan_volume_2=0;
+      $perencanaan_kegiatan_volume_3=0;
+      $perencanaan_kegiatan_volume_4=0;
+
 
       $realisasi_fisik_volume_1=0;
       $realisasi_fisik_volume_2=0;
@@ -64,6 +71,8 @@ class Pelaporan extends Controller
             $perencanaan_kegiatan_pagu_dak_fisik_1+=$d->perencanaan_kegiatan_pagu_dak_fisik;
             $realisasi_keuangan_1+=$d->realisasi_keuangan;
             $realisasi_fisik_volume_1=$d->realisasi_fisik_volume;
+            $perencanaan_kegiatan_volume_1+=$d->perencanaan_kegiatan_volume;
+
 
             break;
             case 2:
@@ -72,6 +81,8 @@ class Pelaporan extends Controller
             $perencanaan_kegiatan_pagu_dak_fisik_2+=$d->perencanaan_kegiatan_pagu_dak_fisik;
             $realisasi_keuangan_2+=$d->realisasi_keuangan;
             $realisasi_fisik_volume_2=$d->realisasi_fisik_volume;
+            $perencanaan_kegiatan_volume_2+=$d->perencanaan_kegiatan_volume;
+
 
             break;
             case 3:
@@ -80,12 +91,16 @@ class Pelaporan extends Controller
             $perencanaan_kegiatan_pagu_dak_fisik_3+=$d->perencanaan_kegiatan_pagu_dak_fisik;
             $realisasi_keuangan_3+=$d->realisasi_keuangan;
             $realisasi_fisik_volume_3=$d->realisasi_fisik_volume;
+            $perencanaan_kegiatan_volume_3+=$d->perencanaan_kegiatan_volume;
+
 
             break;
             case 4:
             $perencanaan_kegiatan_pagu_dak_fisik_4+=$d->perencanaan_kegiatan_pagu_dak_fisik;
             $realisasi_keuangan_4+=$d->realisasi_keuangan;
             $realisasi_fisik_volume_4=$d->realisasi_fisik_volume;
+            $perencanaan_kegiatan_volume_4+=$d->perencanaan_kegiatan_volume;
+
 
             // code...
             $TW4[]=(array)$d;
@@ -101,21 +116,25 @@ class Pelaporan extends Controller
           '1'=>[
               'keuangan'=>$realisasi_keuangan_1,
               'volume_fisik'=>$realisasi_fisik_volume_1,
+              'perencanaan_kegiatan_volume'=>$perencanaan_kegiatan_volume_1,
               'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_1
             ],
           '2'=>[
               'keuangan'=>$realisasi_keuangan_2,
               'volume_fisik'=>$realisasi_fisik_volume_2,
+              'perencanaan_kegiatan_volume'=>$perencanaan_kegiatan_volume_2,
               'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_2
             ],
           '3'=>[
               'keuangan'=>$realisasi_keuangan_3,
               'volume_fisik'=>$realisasi_fisik_volume_3,
+              'perencanaan_kegiatan_volume'=>$perencanaan_kegiatan_volume_3,
               'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_3
             ],
           '4'=>[
               'keuangan'=>$realisasi_keuangan_4,
               'volume_fisik'=>$realisasi_fisik_volume_4,
+              'perencanaan_kegiatan_volume'=>$perencanaan_kegiatan_volume_4,
               'pagu'=>$perencanaan_kegiatan_pagu_dak_fisik_4
             ]
         ),
@@ -127,7 +146,20 @@ class Pelaporan extends Controller
           ]
       );
 
-      return view('front.pelaporan.index')->with('data',$return);
+      return $return;
+    }
+    public function index(){
+      $tahun=HP::front_tahun();
+      
+      $data=static::pelaporan_nas($tahun);
+      $fisik=static::pelaporan_nas($tahun,'FISIK');
+      $non_fisik=static::pelaporan_nas($tahun,'NON');
+
+      return view('front.pelaporan.index')->with([
+        'data'=>$data,
+        'fisik'=>$fisik,
+        'non_fisik'=>$non_fisik
+      ]);
 
     }
 
@@ -165,6 +197,8 @@ class Pelaporan extends Controller
         ->where('provinsi',$daerah->id_pro)
         ->where('kota_kab',$daerah->id_kota)
         ->where('tw',$tw)
+        ->orderBy('kategori_dak','ASC')
+        ->orderBy('id_bidang_db','ASC')
         ->orderBy('id','ASC')
         ->get();
 
@@ -207,13 +241,16 @@ class Pelaporan extends Controller
 
 
         foreach($data as $d){
+          $d->id_bidang_db=(int)$d->id_bidang_db;
+          $d->id_sub_bidang_db=(int)$d->id_sub_bidang_db;
+
           switch ((int)$d->kategori_dak) {
             case 1:
               # code...
             $data_return['REGULER'][]=$d;
 
-            if((!isset($perbidang['REGULER'][$d->id_bidang]))&&$d->kolom=='BIDANG'){
-              $perbidang['REGULER'][$d->id_bidang]=[
+            if((!isset($perbidang['REGULER'][$d->id_bidang_db]))&&$d->kolom=='BIDANG'){
+              $perbidang['REGULER'][$d->id_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -222,8 +259,8 @@ class Pelaporan extends Controller
               ];
             }
 
-             if((!isset($perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]))&&$d->kolom=='SUB BIDANG'){
-              $perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]=[
+             if((!isset($perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]))&&$d->kolom=='SUB BIDANG'){
+              $perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -238,16 +275,16 @@ class Pelaporan extends Controller
 
              
 
-              $perbidang['REGULER'][$d->id_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-              $perbidang['REGULER'][$d->id_bidang]['keuangan']+=$d->realisasi_keuangan;
-              $perbidang['REGULER'][$d->id_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+              $perbidang['REGULER'][$d->id_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+              $perbidang['REGULER'][$d->id_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+              $perbidang['REGULER'][$d->id_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
 
-              if(isset($perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang])){
+              if(isset($perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db])){
 
-                  $perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+                  $perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
 
-                  $perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['keuangan']+=$d->realisasi_keuangan;
-                  $perbidang['REGULER'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+                  $perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+                  $perbidang['REGULER'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
               }
 
             }
@@ -260,8 +297,8 @@ class Pelaporan extends Controller
               # code...
             $data_return['PENUGASAN'][]=$d;
 
-              if((!isset($perbidang['PENUGASAN'][$d->id_bidang]))&&$d->kolom=='BIDANG'){
-              $perbidang['PENUGASAN'][$d->id_bidang]=[
+              if((!isset($perbidang['PENUGASAN'][$d->id_bidang_db]))&&$d->kolom=='BIDANG'){
+              $perbidang['PENUGASAN'][$d->id_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -270,8 +307,8 @@ class Pelaporan extends Controller
               ];
             }
 
-             if((!isset($perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]))&&$d->kolom=='SUB BIDANG'){
-              $perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]=[
+             if((!isset($perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]))&&$d->kolom=='SUB BIDANG'){
+              $perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -287,17 +324,17 @@ class Pelaporan extends Controller
 
 
 
-              $perbidang['PENUGASAN'][$d->id_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-              $perbidang['PENUGASAN'][$d->id_bidang]['keuangan']+=$d->realisasi_keuangan;
-              $perbidang['PENUGASAN'][$d->id_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+              $perbidang['PENUGASAN'][$d->id_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+              $perbidang['PENUGASAN'][$d->id_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+              $perbidang['PENUGASAN'][$d->id_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
 
 
-              if(isset($perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang])){
+              if(isset($perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db])){
 
-                  $perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+                  $perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
 
-                  $perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['keuangan']+=$d->realisasi_keuangan;
-                  $perbidang['PENUGASAN'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+                  $perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+                  $perbidang['PENUGASAN'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
               }
 
             }
@@ -307,8 +344,8 @@ class Pelaporan extends Controller
               # code...
             $data_return['AFFIRMASI'][]=$d;
 
-              if((!isset($perbidang['AFFIRMASI'][$d->id_bidang]))&&$d->kolom=='BIDANG'){
-              $perbidang['AFFIRMASI'][$d->id_bidang]=[
+              if((!isset($perbidang['AFFIRMASI'][$d->id_bidang_db]))&&$d->kolom=='BIDANG'){
+              $perbidang['AFFIRMASI'][$d->id_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -317,8 +354,8 @@ class Pelaporan extends Controller
               ];
             }
 
-             if((!isset($perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]))&&$d->kolom=='SUB BIDANG'){
-              $perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]=[
+             if((!isset($perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]))&&$d->kolom=='SUB BIDANG'){
+              $perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -333,17 +370,17 @@ class Pelaporan extends Controller
               $volume_fisik_affirmasi+=$d->realisasi_fisik_volume;
 
 
-               $perbidang['AFFIRMASI'][$d->id_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-              $perbidang['AFFIRMASI'][$d->id_bidang]['keuangan']+=$d->realisasi_keuangan;
-              $perbidang['AFFIRMASI'][$d->id_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+               $perbidang['AFFIRMASI'][$d->id_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+              $perbidang['AFFIRMASI'][$d->id_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+              $perbidang['AFFIRMASI'][$d->id_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
 
 
-              if(isset($perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang])){
+              if(isset($perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db])){
 
-                  $perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+                  $perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
 
-                  $perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['keuangan']+=$d->realisasi_keuangan;
-                  $perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+                  $perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+                  $perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
               }
             }
 
@@ -352,8 +389,8 @@ class Pelaporan extends Controller
               # code...
             $data_return['NON_FISIK'][]=$d;
 
-              if((!isset($perbidang['NON_FISIK'][$d->id_bidang]))&&$d->kolom=='BIDANG'){
-              $perbidang['NON_FISIK'][$d->id_bidang]=[
+              if((!isset($perbidang['NON_FISIK'][$d->id_bidang_db]))&&$d->kolom=='BIDANG'){
+              $perbidang['NON_FISIK'][$d->id_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -362,8 +399,8 @@ class Pelaporan extends Controller
               ];
             }
 
-             if((!isset($perbidang['NON_FISIK'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]))&&$d->kolom=='SUB BIDANG'){
-              $perbidang['NON_FISIK'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]=[
+             if((!isset($perbidang['NON_FISIK'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]))&&$d->kolom=='SUB BIDANG'){
+              $perbidang['NON_FISIK'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]=[
                 'nama'=>$d->nama,
                 'pagu'=>0,
                 'keuangan'=>0,
@@ -378,17 +415,17 @@ class Pelaporan extends Controller
               // $volume_fisik_non_fisik+=$d->realisasi_fisik_volume;
 
 
-              $perbidang['NON_FISIK'][$d->id_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
-              $perbidang['NON_FISIK'][$d->id_bidang]['keuangan']+=$d->realisasi_keuangan;
-              // $perbidang['AFFIRMASI'][$d->id_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+              $perbidang['NON_FISIK'][$d->id_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+              $perbidang['NON_FISIK'][$d->id_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+              // $perbidang['AFFIRMASI'][$d->id_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
 
 
-              if(isset($perbidang['NON_FISIK'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang])){
+              if(isset($perbidang['NON_FISIK'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db])){
 
-                  $perbidang['NON_FISIK'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
+                  $perbidang['NON_FISIK'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['pagu']+=$d->perencanaan_kegiatan_pagu_dak_fisik;
 
-                  $perbidang['NON_FISIK'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['keuangan']+=$d->realisasi_keuangan;
-                  // $perbidang['AFFIRMASI'][$d->id_bidang]['sub_bidang'][$d->id_sub_bidang]['volume_fisik']+=$d->realisasi_fisik_volume;
+                  $perbidang['NON_FISIK'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['keuangan']+=$d->realisasi_keuangan;
+                  // $perbidang['AFFIRMASI'][$d->id_bidang_db]['sub_bidang'][$d->id_sub_bidang_db]['volume_fisik']+=$d->realisasi_fisik_volume;
               }
             }
 
@@ -430,7 +467,7 @@ class Pelaporan extends Controller
             // 'volume_fisik'=>$volume_fisik_non_fisik,
           ],
           'REKAP'=>[
-             'pagu'=>$pagu,
+            'pagu'=>$pagu,
             'keuangan'=>$keuangan,
             'volume_fisik'=>$volume_fisik,
           ]
@@ -438,6 +475,7 @@ class Pelaporan extends Controller
         );
 
 
+        
         return view('front.pelaporan.detail')->with(['data'=>$data_return,'tw'=>$tw,'daerah'=>$daerah,'detail'=>$detail,'perbidang'=>$perbidang,'timeline'=>$look]);
 
       }else{

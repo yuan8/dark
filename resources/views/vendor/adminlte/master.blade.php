@@ -3,9 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title_prefix', config('adminlte.title_prefix', ''))
-@yield('title', config('adminlte.title', 'AdminLTE 2'))
-@yield('title_postfix', config('adminlte.title_postfix', ''))</title>
+    <title>BINWASDAK KEMENDAGRI {{Auth::User()?HP::front_tahun():''}}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -43,7 +41,9 @@ if((num!='')&&(num!=null)){
     num=0;
 }
 
-return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+var num=num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+return num.replace(/ /g,',');
+
 }
 </script>
 
@@ -53,8 +53,10 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 
 <script src="{{url('vendor/highchart/highcharts.js')}}" charset="utf-8"></script>
 <script src="{{url('vendor/Datatable/datatables.js')}}" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="{{url('vendor/Datatable/datatables.min.css')}}">
 
 <script src="{{ asset('vendor/adminlte/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{url('vendor/custome/cs.css?v='.date('i'))}}">
 <script type="text/javascript">
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "currency-pre": function ( a ) {
@@ -70,7 +72,32 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return b - a;
     }
 } );
+
+
 </script>
+<script type="text/javascript">
+    $.fn.dataTable.Api.register( 'sum()', function ( ) {
+        return this.flatten().reduce( function ( a, b ) {
+            if ( typeof a === 'string' ) {
+                a = a.replace(/[^\d.-]/g, '') * 1;
+            }
+            if ( typeof b === 'string' ) {
+                b = b.replace(/[^\d.-]/g, '') * 1;
+            }
+     
+            return a + b;
+        }, 0 );
+    } );
+    
+</script>
+
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
 
 
 @yield('adminlte_js')

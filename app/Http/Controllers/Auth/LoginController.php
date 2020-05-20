@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Auth;
+use HP;
 class LoginController extends Controller
 {
     /*
@@ -32,8 +33,21 @@ class LoginController extends Controller
      *
      * @return void
      */
+
+
+    public function view(){
+
+
+        $tahun=HP::front_tahun();
+        if($tahun){
+            return view('vendor.adminlte.login');
+        }
+    }
+
+
+
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
     }
 }

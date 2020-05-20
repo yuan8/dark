@@ -3,7 +3,7 @@
 @section('title', 'AdminLTE')
 
 @section('content_header')
-    <h1 class="text-center">REALISASI {{$daerah->nama}}</h1>
+    <h1 class="text-center">REALISASI NASIOANAL</h1>
 @stop
 
 @section('content')
@@ -11,20 +11,6 @@
 <div class="row">
   <div class="col-md-12">
     <div class="box box-primary">
-      <div class="box-header with-border">
-      <form action="{{route('rel.daerah.pro')}}" method="get">
-          <select class="form-control" name="p" id="sel" required="">
-          @foreach($list_d as $l)
-          <option value="{{$l->id}}" {{$l->id==$daerah->id?'selected':''}}>{{$l->nama}}</option>
-          @endforeach
-        </select>
-      </form>
-        <script type="text/javascript">
-          $('#sel').on('change',function(){
-            $('#sel').parent().submit();
-          });
-        </script>
-      </div>
       <div class="box-body" id="pelaporan_chart">
 
       </div>
@@ -37,7 +23,7 @@
       <div class="box-body" id="pelaporan_chart_kat">
 
       </div>
-      <div class="box-footer text-center" id="pelaporan_chart_kat_foot">
+        <div class="box-footer text-center" id="pelaporan_chart_kat_foot">
         <ul class="list-group list-group-horizontal"></ul>
       </div>
 
@@ -48,7 +34,9 @@
     <div class="box box-primary ">
       <div class="box-header with-border">
         <h5 class="text-center"><b class="title"></b> </h5>
+
       </div>
+      <div class="box-body">
       <div class="box-body">
         <table class="table table-bordered" id="view_in_table" style="min-width:100%">
         <thead>
@@ -80,7 +68,6 @@
         </tfoot>
 
         </table>
-
       </div>
 
     </div>
@@ -98,7 +85,7 @@ Highcharts.chart('pelaporan_chart', {
         type: 'line'
     },
     title: {
-        text: 'REALISASI TOTAL DAK {{$daerah->nama}} TAHUN {{HP::front_tahun()}}'
+        text: 'REALISASI TOTAL DAK TAHUN {{HP::front_tahun()}}'
     },
     subtitle: {
         // text: 'Source: Wikipedia.org'
@@ -147,14 +134,35 @@ Highcharts.chart('pelaporan_chart', {
     series: [
       {
         name: 'PAGU YANG DI ANGGARKAN',
+         dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
+                enabled: true
+          },
+
         data: [{{$data['reakap_realisasi']['1']['pagu']}},{{$data['reakap_realisasi']['2']['pagu']}},{{$data['reakap_realisasi']['3']['pagu']}},{{$data['reakap_realisasi']['4']['pagu']}}]
         },
         {
         name: 'KEUANGAN',
+         dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
+                enabled: true
+          },
+
         data: [{{$data['reakap_realisasi']['1']['keuangan']}},{{$data['reakap_realisasi']['2']['keuangan']}},{{$data['reakap_realisasi']['3']['keuangan']}},{{$data['reakap_realisasi']['4']['keuangan']}}]
         },
         {
         name: 'VOLUM FISIK ',
+         dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
+                enabled: true
+          },
+
         data: [{{$data['reakap_realisasi']['1']['volume_fisik']}},{{$data['reakap_realisasi']['2']['volume_fisik']}},{{$data['reakap_realisasi']['3']['volume_fisik']}},{{$data['reakap_realisasi']['4']['volume_fisik']}}]
         },
 
@@ -167,7 +175,7 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         type: 'line'
     },
     title: {
-        text: 'REALISASI PERKATEGORI {{$daerah->nama}}  DAK TAHUN {{HP::front_tahun()}}'
+        text: 'REALISASI PERKATEGORI  DAK TAHUN {{HP::front_tahun()}}'
     },
     subtitle: {
         // text: 'Source: Wikipedia.org'
@@ -226,6 +234,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         id:'reguler_s',
         visible:false,
          dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
           },
 
@@ -239,6 +250,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'KEUANGAN REGULER',
          dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
     },
          linkedTo: 'reguler_s',
@@ -251,8 +265,11 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         data: [{{$data['reakap_realisasi']['1']['keuangan_reguler']}},{{$data['reakap_realisasi']['2']['keuangan_reguler']}},{{$data['reakap_realisasi']['3']['keuangan_reguler']}},{{$data['reakap_realisasi']['4']['keuangan_reguler']}}]
         },
         {
-        name: 'VOLUM FISIK REGULER ',
+        name: 'VOLUM REGULER ',
          dataLabels: {
+          formatter:function(){
+            return ''+formatNumber(this.y)+''
+          },
                 enabled: true
     },
          linkedTo: 'reguler_s',
@@ -267,8 +284,11 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'PAGU PENUGASAN',
          dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
-    },
+         },
         id:'penugasan_s',
         visible:false,
 
@@ -282,8 +302,11 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'KEUANGAN PENUGASAN',
          dataLabels: {
+           formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
-    },
+        },
          linkedTo: 'penugasan_s',
            tooltip: {
           split: true,
@@ -294,10 +317,13 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         data: [{{$data['reakap_realisasi']['1']['keuangan_penugasan']}},{{$data['reakap_realisasi']['2']['keuangan_penugasan']}},{{$data['reakap_realisasi']['3']['keuangan_penugasan']}},{{$data['reakap_realisasi']['4']['keuangan_penugasan']}}]
         },
         {
-        name: 'VOLUM FISIK PENUGASAN ',
+        name: 'VOLUM PENUGASAN ',
          dataLabels: {
-                enabled: true
-    },
+           formatter:function(){
+            return ''+formatNumber(this.y)+''
+          },
+            enabled: true
+        },
          linkedTo: 'penugasan_s',
            tooltip: {
           split: true,
@@ -310,6 +336,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
           {
         name: 'PAGU AFFIRMASI',
          dataLabels: {
+          formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
     },
         id:'affirmasi_s',
@@ -325,6 +354,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'KEUANGAN AFFIRMASI',
          dataLabels: {
+            formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
     },
           tooltip: {
@@ -339,6 +371,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'VOLUM FISIK AFFIRMASI ',
          dataLabels: {
+            formatter:function(){
+            return ''+formatNumber(this.y)+''
+          },
                 enabled: true
     },
           tooltip: {
@@ -353,6 +388,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'PAGU NON FISIK',
          dataLabels: {
+            formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
     },
         id:'non_fisik_s',
@@ -369,6 +407,9 @@ var perkatchart= Highcharts.chart('pelaporan_chart_kat', {
         {
         name: 'KEUANGAN NON FISIK',
          dataLabels: {
+            formatter:function(){
+            return 'Rp. '+formatNumber(this.y)+' (Ribuan)'
+          },
                 enabled: true
     },
          linkedTo: 'non_fisik_s',
@@ -447,7 +488,7 @@ function dropDaetail(index){
   $('#table-view .box-header .title').html('REALISASI DAK TW '+index);
   var dom=$('#table-view').css('display');
   if(dom=='none'){
-    $('#table-view').css('display','block');
+   $('#table-view').css('display','block');
      data_table=$('#view_in_table').DataTable({
        drawCallback: function () {
         var api = this.api();

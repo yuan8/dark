@@ -71,11 +71,24 @@ class AppServiceProvider extends ServiceProvider
                       'text'=>'Tingkat Daerah',
                       'url'=>route('rel.daerah.kota')
 
-                   ]
-
+                   ],
+                   
                  ]
 
              ]);
+
+            // $event->menu->add([
+            //   'text'=>'Perbidang',
+            //   'submenu'=>[
+            //     [
+            //       'text'=>'Provinsi',
+            //       'url'=>route('rel.pro.bidang')
+            //     ]
+
+            //   ]
+
+            // ]);
+
              $event->menu->add([
                    'text' => 'Pilih Tahun',
                    'icon'=>'fa fa-calender',

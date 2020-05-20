@@ -317,5 +317,76 @@ class RelProvinsi extends Controller
 		);
 
 
+
+    }
+
+
+
+    public function perbidang(Request $request){
+      $in="'KEGIATAN','SUB KEGIATAN','DETAIL SUB KEGIATAN','KEGIATAN (SILPA)'";
+
+       $kat=1;
+        if($request->kat){
+          $kat=$request->kat;
+        }
+
+        $tw=1;
+        if($request->tw){
+          $tw=$request->tw;
+        }
+
+        $kode_daerah=11;
+        if($request->kode_daerah){
+          $tw=$request->kode_daerah;
+        }
+
+       $tahun=HP::front_tahun();
+
+      $master=DB::table('mastering_bidang_'.$tahun)->where('kategori_dak',$kat)->get();
+      $bidang=[];
+      foreach($master as $d){
+        $bidang[$d->kode]=$d;
+      }
+
+      $ids=array_keys($bidang);
+
+      
+      $daerah=DB::table('master_daerah')->where('id',$kode_daerah)->first();
+
+
+     $data=DB::table('master_daerah as p')
+      ->leftJoin($daerah->table_name.'_'.$tahun .' as d',function ($q){
+        return $q->on('d.provinsi','=','p.id_pro')->on('d.kota_kab','=','p.id_kota');
+      })
+      ->select(
+        'p.nama as nama_daerah',
+        'p.id_kota',
+        'p.id as kode_daerah',
+        'd.id_bidang_db',
+        DB::raw("case when d.id is not null then 'MELAPOR' else 'TIDAK MELAPOR' end  as melakukan_pelaporan "),
+        DB::raw("CASE WHEN d.kolom='BIDANG' then d.nama end as nama_bidang "),        
+        DB::raw("sum(case when (d.kategori_dak"."=".$kat." and "."d.tw"."=".$tw." and p.id"." like ".("'".$daerah->id."%'")." and d.kolom in (".$in."))  then perencanaan_kegiatan_pagu_dak_fisik else 0 end ) as pagu"),
+        DB::raw("sum(case when (d.kategori_dak"."=".$kat." and "."d.tw"."=".$tw." and p.id"." like ".("'".$daerah->id."%'")." and d.kolom in (".$in."))  then perencanaan_kegiatan_volume else 0 end ) as perencanaan_kegiatan_volume"),
+        DB::raw("sum(case when (d.kategori_dak"."=".$kat." and "."d.tw"."=".$tw." and p.id"." like ".("'".$daerah->id."%'")." and d.kolom in (".$in."))  then realisasi_keuangan else 0 end ) as realisasi_keuangan"),
+        DB::raw("sum(case when (d.kategori_dak"."=".$kat." and "."d.tw"."=".$tw." and p.id"." like ".("'".$daerah->id."%'")." and d.kolom in (".$in."))  then realisasi_fisik_volume else 0 end ) as realisasi_fisik_volume")
+      )
+      ->groupBy('p.id')
+      ->groupBy('d.id_bidang_db')
+      ->where('p.id','like',DB::raw("'".$daerah->id."%'"))
+      ->whereIn('d.id_bidang_db',$ids)
+      ->where('d.tw',$tw)  
+      ->whereIn('d.kategori_dak',[$kat,null])      
+      ->orderBy('p.id','ASC')
+
+      ->get();
+
+      dd($data);
+
+
+
+
+
+
+
     }
 }

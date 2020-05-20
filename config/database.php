@@ -39,6 +39,21 @@ return [
             'prefix' => '',
         ],
 
+        'server' => [
+            'driver' => 'mysql',
+            'host' => '192.168.123.125',
+            'port' => env('DB_PORT', '3306'),
+            'database' => "portaldak_d",
+            'username' => 'root',
+            'password' => 'admin15frustation',
+            'unix_socket' =>  env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
