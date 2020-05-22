@@ -74,122 +74,123 @@ td {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{number_format($detail['REKAP']['pagu'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['REKAP']['keuangan'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['REKAP']['pagu'],0,'.','')}}</td>
+                            <td>{{number_format($detail['REKAP']['keuangan'],0,'.','')}}</td>
                               <td>
                             	@if(($detail['REKAP']['pagu']==0)OR($detail['REKAP']['keuangan']==0))
                             		0%
                             	@else
-                            	{{(($detail['REKAP']['keuangan']/$detail['REKAP']['pagu'])*100).'%'}}
+                            	{{number_format((($detail['REKAP']['keuangan']/$detail['REKAP']['pagu'])*100),2,'.','').'%'}}
 
                             	@endif
 
                             </td>
-                            <td>{{number_format($detail['REKAP']['perencanaan_volume'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['REKAP']['volume_fisik'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['REKAP']['perencanaan_volume'],0,'.','')}}</td>
+                            <td>{{number_format($detail['REKAP']['volume_fisik'],0,'.','')}}</td>
                             <td>
                             	@if(($detail['REKAP']['perencanaan_volume']==0)OR($detail['REKAP']['volume_fisik']==0))
                             		0%
                             	@else
-                            	{{(($detail['REKAP']['perencanaan_volume']/$detail['REKAP']['volume_fisik'])*100).'%'}}
+                            	{{number_format((($detail['REKAP']['perencanaan_volume']/$detail['REKAP']['volume_fisik'])*100),2,'.','').'%'}}
 
                             	@endif
 
                             </td>
 
 
-                           <td>{{number_format($detail['REGULER']['pagu'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['REGULER']['keuangan'],0,'.',' ')}}</td>
+                          	 <td>{{number_format($detail['REGULER']['pagu'],0,'.','')}}</td>
+                            <td>{{number_format($detail['REGULER']['keuangan'],0,'.','')}}</td>
                               <td>
                             	@if(($detail['REGULER']['pagu']==0)OR($detail['REGULER']['keuangan']==0))
                             		0%
                             	@else
-                            	{{(($detail['REGULER']['keuangan']/$detail['REGULER']['pagu'])*100).'%'}}
+                            	{{number_format((($detail['REGULER']['keuangan']/$detail['REGULER']['pagu'])*100),2,'.','').'%'}}
 
                             	@endif
 
                             </td>
-                            <td>{{number_format($detail['REGULER']['perencanaan_volume'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['REGULER']['volume_fisik'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['REGULER']['perencanaan_volume'],0,'.','')}}</td>
+                            <td>{{number_format($detail['REGULER']['volume_fisik'],0,'.','')}}</td>
                             <td>
                             	@if(($detail['REGULER']['perencanaan_volume']==0)OR($detail['REGULER']['volume_fisik']==0))
                             		0%
                             	@else
-                            	{{(($detail['REGULER']['perencanaan_volume']/$detail['REGULER']['volume_fisik'])*100).'%'}}
+                            	{{number_format(($detail['REGULER']['perencanaan_volume']/$detail['REGULER']['volume_fisik'])*100,2,'.','').'%'}}
 
                             	@endif
 
                             </td>
 
-                             <td>{{number_format($detail['PENUGASAN']['pagu'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['PENUGASAN']['keuangan'],0,'.',' ')}}</td>
+                             <td>{{number_format($detail['PENUGASAN']['pagu'],0,'.','')}}</td>
+                            <td>{{number_format($detail['PENUGASAN']['keuangan'],0,'.','')}}</td>
                               <td>
-                            	@if(($detail['PENUGASAN']['pagu']==0)OR($detail['PENUGASAN']['keuangan']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['PENUGASAN']['keuangan']/$detail['PENUGASAN']['pagu'])*100).'%'}}
+                                @if(($detail['PENUGASAN']['pagu']==0)OR($detail['PENUGASAN']['keuangan']==0))
+                                    0%
+                                @else
+                                {{number_format((($detail['PENUGASAN']['keuangan']/$detail['PENUGASAN']['pagu'])*100),2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
-                            <td>{{number_format($detail['PENUGASAN']['perencanaan_volume'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['PENUGASAN']['volume_fisik'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['PENUGASAN']['perencanaan_volume'],0,'.','')}}</td>
+                            <td>{{number_format($detail['PENUGASAN']['volume_fisik'],0,'.','')}}</td>
                             <td>
-                            	@if(($detail['PENUGASAN']['perencanaan_volume']==0)OR($detail['PENUGASAN']['volume_fisik']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['PENUGASAN']['perencanaan_volume']/$detail['PENUGASAN']['volume_fisik'])*100).'%'}}
+                                @if(($detail['PENUGASAN']['perencanaan_volume']==0)OR($detail['PENUGASAN']['volume_fisik']==0))
+                                    0%
+                                @else
+                                {{number_format(($detail['PENUGASAN']['perencanaan_volume']/$detail['PENUGASAN']['volume_fisik'])*100,2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
 
-                             <td>{{number_format($detail['AFFIRMASI']['pagu'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['AFFIRMASI']['keuangan'],0,'.',' ')}}</td>
+                             <td>{{number_format($detail['AFFIRMASI']['pagu'],0,'.','')}}</td>
+                            <td>{{number_format($detail['AFFIRMASI']['keuangan'],0,'.','')}}</td>
                               <td>
-                            	@if(($detail['AFFIRMASI']['pagu']==0)OR($detail['AFFIRMASI']['keuangan']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['AFFIRMASI']['keuangan']/$detail['AFFIRMASI']['pagu'])*100).'%'}}
+                                @if(($detail['AFFIRMASI']['pagu']==0)OR($detail['AFFIRMASI']['keuangan']==0))
+                                    0%
+                                @else
+                                {{number_format((($detail['AFFIRMASI']['keuangan']/$detail['AFFIRMASI']['pagu'])*100),2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
-                            <td>{{number_format($detail['AFFIRMASI']['perencanaan_volume'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['AFFIRMASI']['volume_fisik'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['AFFIRMASI']['perencanaan_volume'],0,'.','')}}</td>
+                            <td>{{number_format($detail['AFFIRMASI']['volume_fisik'],0,'.','')}}</td>
                             <td>
-                            	@if(($detail['AFFIRMASI']['perencanaan_volume']==0)OR($detail['AFFIRMASI']['volume_fisik']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['AFFIRMASI']['perencanaan_volume']/$detail['AFFIRMASI']['volume_fisik'])*100).'%'}}
+                                @if(($detail['AFFIRMASI']['perencanaan_volume']==0)OR($detail['AFFIRMASI']['volume_fisik']==0))
+                                    0%
+                                @else
+                                {{number_format(($detail['AFFIRMASI']['perencanaan_volume']/$detail['AFFIRMASI']['volume_fisik'])*100,2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
 
-                             <td>{{number_format($detail['NON_FISIK']['pagu'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['NON_FISIK']['keuangan'],0,'.',' ')}}</td>
+                             <td>{{number_format($detail['NON_FISIK']['pagu'],0,'.','')}}</td>
+                            <td>{{number_format($detail['NON_FISIK']['keuangan'],0,'.','')}}</td>
                               <td>
-                            	@if(($detail['NON_FISIK']['pagu']==0)OR($detail['NON_FISIK']['keuangan']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['NON_FISIK']['keuangan']/$detail['NON_FISIK']['pagu'])*100).'%'}}
+                                @if(($detail['NON_FISIK']['pagu']==0)OR($detail['NON_FISIK']['keuangan']==0))
+                                    0%
+                                @else
+                                {{number_format((($detail['NON_FISIK']['keuangan']/$detail['NON_FISIK']['pagu'])*100),2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
-                            <td>{{number_format($detail['NON_FISIK']['perencanaan_volume'],0,'.',' ')}}</td>
-                            <td>{{number_format($detail['NON_FISIK']['volume_fisik'],0,'.',' ')}}</td>
+                            <td>{{number_format($detail['NON_FISIK']['perencanaan_volume'],0,'.','')}}</td>
+                            <td>{{number_format($detail['NON_FISIK']['volume_fisik'],0,'.','')}}</td>
                             <td>
-                            	@if(($detail['NON_FISIK']['perencanaan_volume']==0)OR($detail['NON_FISIK']['volume_fisik']==0))
-                            		0%
-                            	@else
-                            	{{(($detail['NON_FISIK']['perencanaan_volume']/$detail['NON_FISIK']['volume_fisik'])*100).'%'}}
+                                @if(($detail['NON_FISIK']['perencanaan_volume']==0)OR($detail['NON_FISIK']['volume_fisik']==0))
+                                    0%
+                                @else
+                                {{number_format(($detail['NON_FISIK']['perencanaan_volume']/$detail['NON_FISIK']['volume_fisik'])*100,2,'.','').'%'}}
 
-                            	@endif
+                                @endif
 
                             </td>
 
+                            
                           
                         </tr>
                     </tbody>
@@ -275,8 +276,8 @@ td {
                                         <tr class="bg bg-info">
                                             <td colspan="">{{$t['nama']}}</td>
                                             <td></td>
-                                            <td>{{number_format($t['pagu'],3,'.',' ')}}</td>
-                                            <td>{{number_format($t['keuangan'],3,'.',' ')}}</td>
+                                            <td>{{number_format($t['pagu'],3,'.','')}}</td>
+                                            <td>{{number_format($t['keuangan'],3,'.','')}}</td>
                                             <td>
                                             	@if(($t['pagu']==0)OR($t['keuangan']==0))
                                             		0%
@@ -286,10 +287,10 @@ td {
 
                                             </td>
                                             <td>
-                                           	 {{number_format($t['perencanaan_volume'],3,'.',' ')}}
+                                           	 {{number_format($t['perencanaan_volume'],3,'.','')}}
                                             </td>
 
-                                            <td>{{number_format($t['volume_fisik'],3,'.',' ')}}</td>
+                                            <td>{{number_format($t['volume_fisik'],3,'.','')}}</td>
                                             <td>
 
                                             @if(($t['volume_fisik']==0)OR($t['perencanaan_volume']==0))
@@ -305,8 +306,8 @@ td {
 											<td></td>
 
                                            <td colspan="">{{$s['nama']}}</td>
-											<td>{{number_format($s['pagu'],3,'.',' ')}}</td>
-											<td>{{number_format($s['keuangan'],3,'.',' ')}}</td>
+											<td>{{number_format($s['pagu'],3,'.','')}}</td>
+											<td>{{number_format($s['keuangan'],3,'.','')}}</td>
 											<td>
 												@if(($s['pagu']==0)OR($s['keuangan']==0))
 													0%
@@ -316,10 +317,10 @@ td {
 
 											</td>
 											<td>
-												 {{number_format($s['perencanaan_volume'],3,'.',' ')}}
+												 {{number_format($s['perencanaan_volume'],3,'.','')}}
 											</td>
 
-											<td>{{number_format($s['volume_fisik'],3,'.',' ')}}</td>
+											<td>{{number_format($s['volume_fisik'],3,'.','')}}</td>
 											<td>
 
 											@if(($s['volume_fisik']==0)OR($s['perencanaan_volume']==0))
@@ -357,8 +358,8 @@ td {
                                         <tr class="bg bg-info">
                                            <td colspan="">{{$t['nama']}}</td>
 											    <td></td>
-											    <td>{{number_format($t['pagu'],3,'.',' ')}}</td>
-											    <td>{{number_format($t['keuangan'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['pagu'],3,'.','')}}</td>
+											    <td>{{number_format($t['keuangan'],3,'.','')}}</td>
 											    <td>
 											        @if(($t['pagu']==0)OR($t['keuangan']==0))
 											            0%
@@ -368,10 +369,10 @@ td {
 
 											    </td>
 											    <td>
-											     {{number_format($t['perencanaan_volume'],3,'.',' ')}}
+											     {{number_format($t['perencanaan_volume'],3,'.','')}}
 											    </td>
 
-											    <td>{{number_format($t['volume_fisik'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['volume_fisik'],3,'.','')}}</td>
 											    <td>
 
 											    @if(($t['volume_fisik']==0)OR($t['perencanaan_volume']==0))
@@ -387,8 +388,8 @@ td {
                                            <td></td>
 													<td colspan="">{{$s['nama']}}</td>
 
-													<td>{{number_format($s['pagu'],3,'.',' ')}}</td>
-													<td>{{number_format($s['keuangan'],3,'.',' ')}}</td>
+													<td>{{number_format($s['pagu'],3,'.','')}}</td>
+													<td>{{number_format($s['keuangan'],3,'.','')}}</td>
 													<td>
 														@if(($s['pagu']==0)OR($s['keuangan']==0))
 															0%
@@ -398,10 +399,10 @@ td {
 
 													</td>
 													<td>
-														 {{number_format($s['perencanaan_volume'],3,'.',' ')}}
+														 {{number_format($s['perencanaan_volume'],3,'.','')}}
 													</td>
 
-													<td>{{number_format($s['volume_fisik'],3,'.',' ')}}</td>
+													<td>{{number_format($s['volume_fisik'],3,'.','')}}</td>
 													<td>
 
 													@if(($s['volume_fisik']==0)OR($s['perencanaan_volume']==0))
@@ -438,8 +439,8 @@ td {
                                         <tr class="bg bg-info">
                                            <td colspan="">{{$t['nama']}}</td>
 											    <td></td>
-											    <td>{{number_format($t['pagu'],3,'.',' ')}}</td>
-											    <td>{{number_format($t['keuangan'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['pagu'],3,'.','')}}</td>
+											    <td>{{number_format($t['keuangan'],3,'.','')}}</td>
 											    <td>
 											        @if(($t['pagu']==0)OR($t['keuangan']==0))
 											            0%
@@ -449,10 +450,10 @@ td {
 
 											    </td>
 											    <td>
-											     {{number_format($t['perencanaan_volume'],3,'.',' ')}}
+											     {{number_format($t['perencanaan_volume'],3,'.','')}}
 											    </td>
 
-											    <td>{{number_format($t['volume_fisik'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['volume_fisik'],3,'.','')}}</td>
 											    <td>
 
 											    @if(($t['volume_fisik']==0)OR($t['perencanaan_volume']==0))
@@ -468,8 +469,8 @@ td {
                                            <td></td>
 													<td colspan="">{{$s['nama']}}</td>
 
-													<td>{{number_format($s['pagu'],3,'.',' ')}}</td>
-													<td>{{number_format($s['keuangan'],3,'.',' ')}}</td>
+													<td>{{number_format($s['pagu'],3,'.','')}}</td>
+													<td>{{number_format($s['keuangan'],3,'.','')}}</td>
 													<td>
 														@if(($s['pagu']==0)OR($s['keuangan']==0))
 															0%
@@ -479,10 +480,10 @@ td {
 
 													</td>
 													<td>
-														 {{number_format($s['perencanaan_volume'],3,'.',' ')}}
+														 {{number_format($s['perencanaan_volume'],3,'.','')}}
 													</td>
 
-													<td>{{number_format($s['volume_fisik'],3,'.',' ')}}</td>
+													<td>{{number_format($s['volume_fisik'],3,'.','')}}</td>
 													<td>
 
 													@if(($s['volume_fisik']==0)OR($s['perencanaan_volume']==0))
@@ -519,8 +520,8 @@ td {
                                           <tr class="bg bg-info">
                                            <td colspan="">{{$t['nama']}}</td>
 											    <td></td>
-											    <td>{{number_format($t['pagu'],3,'.',' ')}}</td>
-											    <td>{{number_format($t['keuangan'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['pagu'],3,'.','')}}</td>
+											    <td>{{number_format($t['keuangan'],3,'.','')}}</td>
 											    <td>
 											        @if(($t['pagu']==0)OR($t['keuangan']==0))
 											            0%
@@ -530,10 +531,10 @@ td {
 
 											    </td>
 											    <td>
-											     {{number_format($t['perencanaan_volume'],3,'.',' ')}}
+											     {{number_format($t['perencanaan_volume'],3,'.','')}}
 											    </td>
 
-											    <td>{{number_format($t['volume_fisik'],3,'.',' ')}}</td>
+											    <td>{{number_format($t['volume_fisik'],3,'.','')}}</td>
 											    <td>
 
 											    @if(($t['volume_fisik']==0)OR($t['perencanaan_volume']==0))
@@ -549,8 +550,8 @@ td {
                                            <td></td>
 													<td colspan="">{{$s['nama']}}</td>
 
-													<td>{{number_format($s['pagu'],3,'.',' ')}}</td>
-													<td>{{number_format($s['keuangan'],3,'.',' ')}}</td>
+													<td>{{number_format($s['pagu'],3,'.','')}}</td>
+													<td>{{number_format($s['keuangan'],3,'.','')}}</td>
 													<td>
 														@if(($s['pagu']==0)OR($s['keuangan']==0))
 															0%
@@ -560,10 +561,10 @@ td {
 
 													</td>
 													<td>
-														 {{number_format($s['perencanaan_volume'],3,'.',' ')}}
+														 {{number_format($s['perencanaan_volume'],3,'.','')}}
 													</td>
 
-													<td>{{number_format($s['volume_fisik'],3,'.',' ')}}</td>
+													<td>{{number_format($s['volume_fisik'],3,'.','')}}</td>
 													<td>
 
 													@if(($s['volume_fisik']==0)OR($s['perencanaan_volume']==0))
