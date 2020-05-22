@@ -34,17 +34,17 @@
 
 @yield('body')
 <script type="text/javascript">
-function formatNumber(num) {
-if((num!='')&&(num!=null)){
-    num=parseFloat(num).toFixed(3);
-}else{
-    num=0;
+function formatNumber(num,fix=3) {
+    if((num!='')&&(num!=null)){
+        num=parseFloat(num).toFixed(fix);
+    }else{
+        num=0;
+    }
+
+    var num=num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+    return num.replace(/ /g,',');
 }
 
-var num=num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
-return num.replace(/ /g,',');
-
-}
 </script>
 
 <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.slimscroll.min.js') }}"></script>

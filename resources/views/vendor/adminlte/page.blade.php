@@ -162,7 +162,6 @@
 @section('adminlte_js')
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     <script type="text/javascript" src="">
-        console.log('anuuuuu');
     </script>
     @stack('js')
     @yield('js')
